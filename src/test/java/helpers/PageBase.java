@@ -14,9 +14,9 @@ import java.util.List;
 
 public class PageBase {
 
-    public AndroidDriver driver;
+    public WebDriver driver;
 
-    public PageBase(AndroidDriver driver) {
+    public PageBase(WebDriver driver) {
         this.driver = driver;
     }
 
