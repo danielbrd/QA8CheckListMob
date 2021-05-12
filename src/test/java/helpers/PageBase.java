@@ -4,6 +4,7 @@ import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.pagefactory.AppiumFieldDecorator;
 import org.openqa.selenium.By;
+import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
@@ -18,6 +19,16 @@ public class PageBase {
 
     public PageBase(WebDriver driver) {
         this.driver = driver;
+    }
+
+    public void rotateScreenLandscape() {
+        AppiumDriver appDriver = (AppiumDriver) driver;
+        appDriver.rotate(ScreenOrientation.LANDSCAPE);
+    }
+
+    public void rotateScreenPortrait() {
+        AppiumDriver appDriver = (AppiumDriver) driver;
+        appDriver.rotate(ScreenOrientation.PORTRAIT);
     }
 
     public PageBase waitUntilElementIsClickable(By locator, int time) {

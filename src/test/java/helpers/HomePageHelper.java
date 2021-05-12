@@ -20,10 +20,35 @@ public class HomePageHelper extends PageBase{
     }
 
     @FindBy (className = "android.widget.TextView")
-    AndroidElement appName;
+    WebElement appName;
+    @FindBy (id = "com.flt.checklist:id/add_shopping_list")
+    WebElement addList;
+    @FindBy(xpath = "//*[@resource-id='android:id/custom']/*")
+    WebElement nameCheckListField;
+    @FindBy(id = "android:id/button1")
+    WebElement okButton;
+    @FindBy(id = "com.flt.checklist:id/add_item_edit")
+    WebElement addTaskFieldName;
+
+    public void waitUntilPageIsLoaded() {
+        waitUntilElementIsClickable(addList, 10);
+    }
+
+    public void waitUntilAppNameIsVisible() {
+        waitUntilElementIsVisible(appName, 10);
+    }
+
 
     public String gettAppName(){
         return appName.getText();
+    }
+
+    public void createNewCheckList(String name){
+        addList.click();
+        waitUntilElementIsClickable(nameCheckListField, 10);
+        this.fillField(nameCheckListField, name);
+        waitUntilElementIsClickable(okButton, 10);
+        okButton.click();
     }
 
 

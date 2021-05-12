@@ -1,5 +1,6 @@
 package tests;
 
+import helpers.CurrentCheckListHelper;
 import helpers.HomePageHelper;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
@@ -17,7 +18,18 @@ import java.net.URL;
 
 public class HomePageTests extends TestBase {
 
+    //initiation of the class helper
     HomePageHelper homePage;
+    CurrentCheckListHelper currentCheckList;
+
+    //metod init test dlya testov etogo klassa
+    @BeforeMethod
+    public void initTests(){
+        homePage = PageFactory.initElements(driver, HomePageHelper.class);
+        currentCheckList = PageFactory.initElements(driver, CurrentCheckListHelper.class);
+        homePage.waitUntilPageIsLoaded();
+        homePage.waitUntilAppNameIsVisible();
+    }
 
     @Test
     public void applStartTest() throws InterruptedException {
@@ -27,36 +39,36 @@ public class HomePageTests extends TestBase {
 
     @Test
     public void addNewList() throws InterruptedException {
-        Thread.sleep(5000);
-        int listsCountBef = driver.findElements(By.id("com.flt.checklist:id/text_layout")).size();
+        int firstQuan = currentCheckList.getQuantityList();
 
-        driver.findElement(By.id("com.flt.checklist:id/add_shopping_list")).click();
-        Thread.sleep(1500);
+        homePage.createNewCheckList("NewList");
+        homePage.waitUntilPageIsLoaded();
+        currentCheckList.currentListBackButton();
+        homePage.waitUntilPageIsLoaded();
+        homePage.createNewCheckList("NewList2");
+        currentCheckList.addTaskInList("First Task");
+        currentCheckList.currentListBackButton();
 
-        WebElement editText = driver.findElement(By.xpath("//*[@resource-id='android:id/custom']/*"));
-        editText.click();
-        Thread.sleep(1500);
+        int lastQuan = currentCheckList.getQuantityList();
 
-        editText.sendKeys("NewList");
-        Thread.sleep(1500);
+        Assert.assertTrue(currentCheckList.isLastCheckListTitle("NewList"));
+        Assert.assertEquals(firstQuan+1, lastQuan,
+                "The quantity of lists after adding is not the quantity before adding plus one");
+    }
 
-        driver.findElement(By.id("android:id/button1")).click();
-        Thread.sleep(1500);
+    @Test
+    public void addNewCheckListAndRotate() throws InterruptedException {
+        int firstQuan = currentCheckList.getQuantityList();
 
-        driver.findElement(By.id("com.flt.checklist:id/add_item_edit")).sendKeys("1. Finish My First MobTest task!");
-        Thread.sleep(1500);
+        homePage.createNewCheckList("NewListForRotationTest");
+        homePage.waitUntilPageIsLoaded();
+        currentCheckList.rotateScreenLandscape();
+        currentCheckList.currentListBackButton();
+        homePage.waitUntilPageIsLoaded();
+        int lastQuan = currentCheckList.getQuantityList();
 
-        driver.findElement(By.id("com.flt.checklist:id/add_item")).click();
-        Thread.sleep(1500);
-
-        driver.findElement(By.xpath("//*[@content-desc='Navigate up']")).click();
-        Thread.sleep(1500);
-
-        int listsCountAft = driver.findElements(By.id("com.flt.checklist:id/text_layout")).size();
-
-        Assert.assertTrue(driver.findElement(By.id("com.flt.checklist:id/list_title"))
-                .getText().contains("NewList"));
-        Assert.assertEquals(listsCountBef + 1, listsCountAft,
+        Assert.assertTrue(currentCheckList.isLastCheckListTitle("NewListForRotationTest"));
+        Assert.assertEquals(firstQuan+1, lastQuan,
                 "The quantity of lists after adding is not the quantity before adding plus one");
     }
 }
